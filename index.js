@@ -68,11 +68,26 @@ async function run() {
 
 
     // user related apis in the database 
+
+    // user get method
+    app.get('/users', async(req, res) => {
+      const result = await usersCollection.find().toArray()
+      res.send(result)
+    })
+    // user post method
     app.post('/users', async(req, res) => {
       const userProfile = req.body
       const result = await usersCollection.insertOne(userProfile)
       res.send(result)
     })
+    // user delete method
+    app.delete('/users/:id', async(req, res) => {
+       const id = req.params.id
+       const query = {_id: new ObjectId(id)}
+       const result = await usersCollection.deleteOne(query)
+       res.send(result)
+    })
+
     
 
     // Send a ping to confirm a successful connection
