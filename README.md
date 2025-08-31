@@ -1,6 +1,7 @@
 # coffee shop server
 
-
+## 🔗 Live Server site  
+###  [coffee shop](https://coffee-shop-server-two.vercel.app/) 
 
 ## 🔐 .env Example
 ```
