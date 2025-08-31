@@ -80,6 +80,20 @@ async function run() {
       const result = await usersCollection.insertOne(userProfile)
       res.send(result)
     })
+    // user patch method
+    app.patch('/users', async(req, res) => {
+      // console.log(req.body)
+      const {email, lastSignInTime} = req.body
+      const filter = {email:email}
+      const updateUserDoc = {
+        $set:{
+          lastSignInTime:lastSignInTime
+        }
+      }
+      const result = await usersCollection.updateOne(filter, updateUserDoc)
+      res.send(result)
+     
+    })
     // user delete method
     app.delete('/users/:id', async(req, res) => {
        const id = req.params.id
