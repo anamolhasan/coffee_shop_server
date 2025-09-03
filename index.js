@@ -23,10 +23,42 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
 
-    const coffeeCollection = client.db("coffeeDB").collection("conceptualCoffees");
-    const usersCollection = client.db('coffeeDB').collection('conceptualUsers')
+    const database = client.db("coffeeDB")
+    const coffeeCollection = database.collection("conceptualCoffees");
+    const usersCollection = database.collection('conceptualUsers')
 
-   
+  //  get method 
+  app.get('/coffees', async(req, res) => {
+     const allCoffees = await coffeeCollection.find().toArray()
+     res.send(allCoffees)
+  })
+
+  // post method
+  app.post('/coffees', async(req, res) => {
+    const newCoffee = req.body
+    const addCoffee = await coffeeCollection.insertOne(newCoffee)
+    res.send(addCoffee)
+  })
+
+  app.put('/coffees/:id', async(req, res) => {
+    const id = req.params.id
+    const query = {_id: new ObjectId(id)}
+    const options = {upsert:true}
+    const updateCoffee = req.body
+    const updatedDoc = {
+      $set:updateCoffee
+    }
+    const result = await coffeeCollection.updateOne(query, updatedDoc, options)
+    res.send(result)
+  })
+
+
+  app.delete('/coffees/:id', async(req, res) => {
+    const id = req.params.id
+    const query = {_id: new ObjectId(id)}
+    const deletedCoffee = await coffeeCollection.deleteOne(query)
+    res.send(deletedCoffee)
+  })
 
 
 
