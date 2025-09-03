@@ -25,7 +25,7 @@ async function run() {
 
     const database = client.db("coffeeDB")
     const coffeeCollection = database.collection("conceptualCoffees");
-    const usersCollection = database.collection('conceptualUsers')
+    // const usersCollection = database.collection('conceptualUsers')
 
   //  get method 
   app.get('/coffees', async(req, res) => {
@@ -33,11 +33,27 @@ async function run() {
      res.send(allCoffees)
   })
 
+  // single get method
+  app.get('/coffees/:id', async(req, res) => {
+    const id = req.params.id
+    const query = {_id: new ObjectId(id)}
+    const result = await coffeeCollection.findOne(query)
+    res.send(result)
+  })
+
+  // single get method
+  app.get('/my-coffees/:email', async(req, res) => {
+    const email = req.params.email
+    const query = {email}
+    const result = await coffeeCollection.find(query).toArray()
+    res.send(result)
+  })
+
   // post method
   app.post('/coffees', async(req, res) => {
     const newCoffee = req.body
     const addCoffee = await coffeeCollection.insertOne(newCoffee)
-    res.send(addCoffee)
+    res.status(201).send(addCoffee)
   })
 
   app.put('/coffees/:id', async(req, res) => {
