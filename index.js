@@ -52,11 +52,18 @@ async function run() {
     // handle like toggle    part 07 conceptual sessions  milestone 11 day 1
     app.patch("/like/:coffeeId", async (req, res) => {
       const id = req.params.coffeeId;
-      const filter = { _id: new ObjectId(id) };
-      const email = req.body.email;
+      const filter = { _id: new ObjectId(id) }
+      console.log('id=',filter)
+      const email = req.body.email
+      console.log('email=',email)
       const coffee = await coffeeCollection.findOne(filter);
+      console.log('coffee=',coffee)
       //  check if the user has already liked the coffee or not
       const alreadyLiked = coffee?.likedBy.includes(email);
+     console.log(
+        'ekdom shurute like er obostha---> alreadyLiked: ',
+        alreadyLiked
+      )
       const updateDoc = alreadyLiked
         ? {
             $pull: {
