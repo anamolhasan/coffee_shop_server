@@ -53,17 +53,17 @@ async function run() {
     app.patch("/like/:coffeeId", async (req, res) => {
       const id = req.params.coffeeId;
       const filter = { _id: new ObjectId(id) }
-      console.log('id=',filter)
+      // console.log('id=',filter)
       const email = req.body.email
-      console.log('email=',email)
+      // console.log('like je korse tar email=',email)
       const coffee = await coffeeCollection.findOne(filter);
-      console.log('coffee=',coffee)
+      // console.log('coffee=',coffee)
       //  check if the user has already liked the coffee or not
-      const alreadyLiked = coffee?.likedBy.includes(email);
-     console.log(
-        'ekdom shurute like er obostha---> alreadyLiked: ',
-        alreadyLiked
-      )
+      const alreadyLiked = coffee?.likedBy.includes(email); 
+    //  console.log(
+    //     'ekdom shurute like er obostha---> alreadyLiked: ',
+    //     alreadyLiked
+    //   )
       const updateDoc = alreadyLiked
         ? {
             $pull: {
