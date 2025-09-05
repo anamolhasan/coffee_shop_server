@@ -90,8 +90,8 @@ async function run() {
     // save a coffee data in database thorough post request
     app.post("/place-order/:coffeeId", async (req, res) => {
       const id = req.params.coffeeId
-      const orderData = req.body.orderData
-      const result = await coffeeCollection.insertOne(orderData);
+      const orderData = req.body
+      const result = await orderCollection.insertOne(orderData);
       if(result.acknowledged){
         // update quantity from coffee collection
         await coffeeCollection.updateOne(
@@ -112,6 +112,7 @@ async function run() {
     app.post("/coffees", async (req, res) => {
       const newCoffee = req.body
       const quantity = newCoffee.quantity
+      // convert string quantity to number type value
       newCoffee.quantity = parseInt(quantity)
       const addCoffee = await coffeeCollection.insertOne(newCoffee);
       res.status(201).send(addCoffee);
@@ -132,6 +133,14 @@ async function run() {
       );
       res.send(result);
     });
+
+    // get all orders by customer email
+    app.get('/my-orders/:email', async(req, res) => {
+      const email = req.params.email
+      const filter = {customerEmail: email}
+      const allOrders = await orderCollection.find(filter).toArray()
+      res.send(allOrders)
+    })
 
     app.delete("/coffees/:id", async (req, res) => {
       const id = req.params.id;
