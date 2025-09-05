@@ -25,6 +25,7 @@ async function run() {
 
     const database = client.db("coffeeDB");
     const coffeeCollection = database.collection("conceptualCoffees");
+    const orderCollection = database.collection("conceptualOrders");
     // const usersCollection = database.collection('conceptualUsers')
 
     //  get method
@@ -85,9 +86,33 @@ async function run() {
       });
     });
 
+    // handle order
+    // save a coffee data in database thorough post request
+    app.post("/place-order/:coffeeId", async (req, res) => {
+      const id = req.params.coffeeId
+      const orderData = req.body.orderData
+      const result = await coffeeCollection.insertOne(orderData);
+      if(result.acknowledged){
+        // update quantity from coffee collection
+        await coffeeCollection.updateOne(
+          {_id: new ObjectId(id) },
+          {
+            $inc: {
+              quantity: -1
+            }
+          }
+        )
+      }
+
+
+      res.status(201).send(result);
+    });
+
     // post method
     app.post("/coffees", async (req, res) => {
-      const newCoffee = req.body;
+      const newCoffee = req.body
+      const quantity = newCoffee.quantity
+      newCoffee.quantity = parseInt(quantity)
       const addCoffee = await coffeeCollection.insertOne(newCoffee);
       res.status(201).send(addCoffee);
     });
